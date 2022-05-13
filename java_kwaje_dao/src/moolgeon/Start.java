@@ -23,7 +23,7 @@ public class Start {
 		main.add(new Login());
 		
 		
-		// 여기까지
+		// 여기까지 // 수정되나 테스트
 		
 		main.setVisible(true);
 	}
