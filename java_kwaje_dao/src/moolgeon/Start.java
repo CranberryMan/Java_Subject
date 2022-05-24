@@ -1,32 +1,49 @@
 package moolgeon;
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.*;
-public class Start {
+public class Start extends JFrame {
+	TopPannel top = new TopPannel();
+	AdminTopPannel topAdmin = new AdminTopPannel();
 	Dao dao = new Dao();
 	JTextField idTf;
 	JTextField pwTf;
-
+	Container c;
+	JFrame main;
+	int isAdmin=-1;
 	Start(){
-		JFrame main = new JFrame();
-		main.setSize(800,600);
-		main.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		main.setLocationRelativeTo(null);
-		
+		setSize(800,600);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLocationRelativeTo(null);
+		c = getContentPane();
 		// 여기부터
 		
 //		main.add(new TopMenu(), BorderLayout.NORTH);
-		main.add(new Login());
+//		main.add(new Login());
+		viewScreen(new Login());
 		
 		
 		// 여기까지 // 수정되나 테스트
 		
-		main.setVisible(true);
+		setVisible(true);
 	}
+	
+	void viewScreen(JPanel p) {
+		c.removeAll();
+		add(p);
+		if(isAdmin == 0) {
+			add(top, BorderLayout.NORTH);
+		}		
+		else if(isAdmin == 1) {
+			add(topAdmin, BorderLayout.NORTH);
+		}
+		c.revalidate();
+		}
 	
 	class Login extends JPanel{
 		Login(){
@@ -77,29 +94,6 @@ public class Start {
 			add(imsi);			
 		}
 	}
-	
-	class TopMenu extends JPanel {
-		TopMenu(int admin){
-			if (admin == 0) {
-				setLayout(new GridLayout(1, 3, 5, 5));
-				Font font = new Font("궁서체", Font.BOLD, 20);
-				JButton buy = new JButton("구매");
-				JButton refund = new JButton("환불");
-				JButton logout = new JButton("로그아웃");
-				buy.setFont(font);
-				refund.setFont(font);
-				logout.setFont(font);
-				add(buy);
-				add(refund);
-				add(logout);
-			}
-			else {
-				
-			}
-		}
-	}
-	
-	
 
 
 	public static void main(String[] args) {
@@ -119,12 +113,16 @@ public class Start {
 				System.out.println("여기 로그인처리");
 				id = idTf.getText();
 				pw = pwTf.getText();
-				int isAdmin = dao.login(id, pw);
+				isAdmin = dao.login(id, pw);
 				if(isAdmin == 0) {
 					System.out.println("회원");
+					LoginUser.id = id;
+					viewScreen(new LoginInfoPanel(isAdmin, id));
 				}
 				else if(isAdmin == 1) {
 					System.out.println("어드민");
+					LoginUser.id = id;
+					viewScreen(new LoginInfoPanel(isAdmin, id));
 				}
 				else {
 					System.out.println("??");
